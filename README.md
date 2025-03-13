@@ -142,6 +142,14 @@ terraform destroy -auto-approve
 
 ## Explanation of Each Resource
 
+### Backend Remote for Terraform
+**Purpose:**
+- The Terraform backend remote stores and manages state files centrally, enabling collaboration, security, and consistency across infrastructure deployments.
+
+**Use Case:**
+- It allows multiple team members to work on the same infrastructure across different environments while preventing conflicts and ensuring state integrity using S3 and DynamoDB.
+
+
 ### VPC (Virtual Private Cloud)
 **Purpose:**
 - Acts as a virtual network to host AWS resources securely.
