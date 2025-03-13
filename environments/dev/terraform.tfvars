@@ -1,0 +1,6 @@
+aws_region    = "us-east-1"
+company_name  = "T2S Services"
+project_name  = "T2S Networking"
+environment   = "dev"
+dx_location   = "EqDC2"
+dx_bandwidth  = "1Gbps"
