@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket         = "${var.company_name}-${var.environment}-terraform-state"
+    key            = "${var.environment}/terraform.tfstate"
+    region         = var.aws_region
+    dynamodb_table = "${var.company_name}-${var.environment}-terraform-locks"
+    encrypt        = true
+  }
+}
+
 module "vpc" {
   source         = "../../modules/vpc"
   cidr_block     = "10.10.0.0/16"
@@ -40,4 +50,27 @@ module "direct_connect" {
   company_name   = var.company_name
   project_name   = var.project_name
   environment    = var.environment
+}
+
+module "monitoring" {
+  source       = "../modules/monitoring"
+  company_name = var.company_name
+  environment  = var.environment
+  alarm_action = var.alarm_action
+}
+
+module "security" {
+  source       = "../modules/security"
+  company_name = var.company_name
+  environment  = var.environment
+}
+
+module "reliability" {
+  source             = "../modules/reliability"
+  company_name       = var.company_name
+  environment        = var.environment
+  private_subnet_ids = var.private_subnet_ids
+  desired_capacity   = var.desired_capacity
+  max_size           = var.max_size
+  min_size           = var.min_size
 }

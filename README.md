@@ -23,6 +23,7 @@ With modular Terraform design, this infrastructure can be deployed across multip
 ## Project Structure
 ```plaintext
 t2s-services-networking/
+│── backend/
 │── modules/
 │   ├── vpc/
 │   ├── subnets/
@@ -57,41 +58,88 @@ terraform -v
 ```
 If Terraform is not installed, follow the instructions at [Terraform Installation Guide](https://developer.hashicorp.com/terraform/downloads).
 
-### Step 2: Initialize Terraform
-Navigate to the desired environment directory (e.g., dev) and run:
+---
+
+### Step 2: Create a Backend storage for the Terraform State File
+- Navigate to the backend directory and run:
 ```sh
-cd environments/dev
+cd backend/
 terraform init
 ```
-This initializes Terraform, downloads required providers, and configures the backend.
+- This initializes Terraform, downloads required providers, and configures the backend.
 
-### Step 3: Plan the Infrastructure
-To preview changes before applying them:
+#### Plan the Infrastructure
+- To preview changes before applying them:
 ```sh
 terraform plan
 ```
 This outputs the proposed changes.
 
-### Step 4: Deploy the Infrastructure
-To deploy the infrastructure:
+#### Deploy the Infrastructure
+- To deploy the infrastructure:
 ```sh
 terraform apply -auto-approve
 ```
-This provisions all the networking resources in AWS.
+- This provisions all the resources you need for your Backend: S3 Bucket and DynamoDB table.
 
-### Step 5: Verify Deployment
+#### Verify Deployment
 Once deployed, check the outputs:
 ```sh
 terraform output
 ```
 
-### Step 6: Destroy the Infrastructure (If Needed)
+---
+
+### Step 3: Deploy the Networking Infrastructure
+- Navigate to the desired environment and configure the terraform.tfvars file as desired. 
+
+#### Initialize the project.
+```sh
+cd environments/dev  #stage or prod as necessary. 
+terraform init
+```
+- This initializes Terraform, downloads required providers, and configures the backend.
+
+#### Plan the Infrastructure
+- To preview changes before applying them:
+```sh
+terraform plan
+```
+This outputs the proposed changes.
+
+#### Deploy the Infrastructure
+- To deploy the infrastructure:
+```sh
+terraform apply -auto-approve
+```
+- This provisions all the networking resources in AWS.
+
+#### Verify Deployment
+Once deployed, check the outputs:
+```sh
+terraform output
+```
+
+---
+
+### Step 4: Destroy the Infrastructure (If Needed)
+
+#### Destroy the Backend infrastructure (whenever desired)
 To remove all deployed resources:
 ```sh
+cd backend
+terraform destroy -auto-approve
+```
+
+#### Destroy the Networking infrastructure (whenever desired)
+To remove all deployed resources:
+```sh
+cd environments/dev  # or any other environments: stage, prod, etc.
 terraform destroy -auto-approve
 ```
 
 ---
+
 ## Explanation of Each Resource
 
 ### VPC (Virtual Private Cloud)
@@ -196,13 +244,6 @@ terraform destroy -auto-approve
 - Private subnets in each VPC for isolation.
 - Centralized routing via Transit Gateway to control access between services.
 - Prometheus for microservices monitoring.
-
----
-### Destroy the Infrastructure (If Needed)
-To remove all deployed resources:
-```sh
-terraform destroy -auto-approve
-```
 
 ---
 
